@@ -1,8 +1,8 @@
 import cv2
 import pywt
-from PIL import Image
 import Transformations as tr
-import halftone as hf
+import Halftone as hf
+import pathlib
 from skimage.transform import downscale_local_mean
 
 
@@ -14,7 +14,8 @@ def main():
 	Y, Cr, Cb = cv2.split(img)
 	print(Y.shape)
 
-	cv2.imwrite("OldY.jpg", Y)
+	pathlib.Path('./FirstAttempt').mkdir(parents=True, exist_ok=True)
+	cv2.imwrite("./FirstAttempt/OldY.jpg", Y)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
@@ -29,20 +30,11 @@ def main():
 
 	NewY = pywt.idwt2((Sl, (ReducedCb, ReducedCr, Sd)), 'haar')
 
-	# scale_percent = 200  # percent of original size
-	# width = int(NewY.shape[1] * scale_percent / 100)
-	# height = int(NewY.shape[0] * scale_percent / 100)
-	# dim = (width, height)
-
-	cv2.imwrite("NewYFirstTry.jpg", NewY)
+	cv2.imwrite("./FirstAttempt/NewYFirstTry.jpg", NewY)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
-	# Resize image
-	# resized = cv2.resize(NewY, dim, interpolation=cv2.INTER_AREA)
-	# print(resized.shape)
-
-	h = hf.Halftone('NewYFirstTry.jpg')
+	h = hf.Halftone('./FirstAttempt/NewYFirstTry.jpg')
 	h.make(angles=[0, 15, 30, 45], antialias=True, percentage=10, sample=1, scale=2, style='grayscale')
 
 

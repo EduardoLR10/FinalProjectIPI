@@ -2,7 +2,7 @@ import cv2
 import pywt
 import pathlib
 import Transformations as tr
-import Halftone as hf
+import halftone as hf
 from skimage.transform import downscale_local_mean
 
 
@@ -13,8 +13,6 @@ def main():
 	Y, Cr, Cb = cv2.split(img)
 
 	pathlib.Path('./SecondAttempt').mkdir(parents=True, exist_ok=True)
-
-	# Color Embedding
 
 	(Sl, (Sh1, Sv1, Sd1), (Sh2, Sv2, Sd2)) = pywt.wavedec2(Y, 'db1', level=2)
 
@@ -55,8 +53,6 @@ def main():
 
 	h = hf.Halftone('./SecondAttempt/NewYSecondTry.jpg')
 	h.make(angles=[0, 15, 30, 45], antialias=True, percentage=10, sample=1, scale=2, style='grayscale')
-
-
 
 
 if __name__ == '__main__':
