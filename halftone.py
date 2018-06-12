@@ -1,7 +1,17 @@
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageStat
-import os
+try:
+    import Image, ImageDraw, ImageStat
+except ImportError:
+
+    try:
+        import PIL.Image as Image
+        import PIL.ImageDraw as ImageDraw
+        import PIL.ImageStat as ImageStat
+    except:
+        raise
+except:
+    raise
+
+import os, sys
 
 """
 Class: Halftone( path )
@@ -9,10 +19,10 @@ Usage:
     import halftone
     h = halftone.Halftone('/path/to/image.jpg')
     h.make()
+
 The bulk of this is taken from this Stack Overflow answer by fraxel:
 http://stackoverflow.com/a/10575940/250962
 """
-
 
 class Halftone(object):
 
@@ -22,7 +32,7 @@ class Halftone(object):
         """
         self.path = path
 
-    def make(self, sample=10, scale=1, percentage=0, filename_addition='_halftoned', angles=[0, 15, 30, 45], style='color', antialias=False):
+    def make(self, sample=10, scale=1, percentage=0, filename_addition='_halftoned', angles=[0,15,30,45], style='color', antialias=False):
         """
         Leave filename_addition empty to save the image in place.
         Arguments:
@@ -73,10 +83,10 @@ class Halftone(object):
             cmyk.append(cmyk_im[i].load())
         for x in range(im.size[0]):
             for y in range(im.size[1]):
-                gray = min(cmyk[0][x, y], cmyk[1][x, y], cmyk[2][x, y]) * percentage / 100
+                gray = min(cmyk[0][x,y], cmyk[1][x,y], cmyk[2][x,y]) * percentage / 100
                 for i in range(3):
-                    cmyk[i][x, y] = cmyk[i][x, y] - gray
-                cmyk[3][x, y] = gray
+                    cmyk[i][x,y] = cmyk[i][x,y] - gray
+                cmyk[3][x,y] = gray
         return Image.merge('CMYK', cmyk_im)
 
     def halftone(self, im, cmyk, sample, scale, angles, antialias):
@@ -154,9 +164,19 @@ class Halftone(object):
 
             if antialias is True:
                 # Scale it back down to antialias the image.
-                w = (xx2 - xx1) / antialias_scale
-                h = (yy2 - yy1) / antialias_scale
+                w = int((xx2 - xx1) / antialias_scale)
+                h = int((yy2 - yy1) / antialias_scale)
                 half_tone = half_tone.resize((w, h), resample=Image.LANCZOS)
 
             dots.append(half_tone)
         return dots
+
+if __name__ == '__main__':
+
+    import sys
+    import halftone
+
+    path = sys.argv[1]
+
+    h = Halftone(path)
+    h.make()

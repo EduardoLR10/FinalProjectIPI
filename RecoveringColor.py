@@ -46,7 +46,8 @@ def main():
 	# Sd2 = CrMinus
 
 	NewY = pywt.waverec2((Sl, (Sh1, Sv1, ReducedCbMinus), (CrPlus, CbPlus, CrMinus)), 'db1')
-	# rescale(NewY, 2.0, anti_aliasing=False)
+	h = hf.Halftone('NewY.jpg')
+	h.make(angles=[0, 15, 30, 45], antialias=True, percentage=10, sample=1, scale=2, style='grayscale')
 	cv2.imwrite("NewY2.jpg", NewY)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
